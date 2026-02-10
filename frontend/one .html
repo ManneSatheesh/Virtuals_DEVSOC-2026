@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aura Companion – Your AI Voice Companion</title>
+    <style>
+        /* =========================
+       THEME TOKENS
+    ========================== */
+        :root {
+            --accent-1: #F46C09;
+            --accent-2: #F97707;
+            --accent-deep: #D95A00;
+            --bg-cream: #FEFAEF;
+            --text: #3A393C;
+            --text-soft: #4C4B4C;
+            --white: #ffffff;
+            --muted: #6d6d6d;
+        }
+
+        /* =========================
+       BASE & LAYOUT
+    ========================== */
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(60% 50% at 15% 30%, rgba(249, 119, 7, .18), rgba(249, 119, 7, 0) 60%),
+                var(--bg-cream);
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: clamp(16px, 3vw, 28px);
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 8px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .brand .logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: #fff;
+            font-weight: 900;
+            box-shadow: 0 6px 16px rgba(249, 119, 7, .35);
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            align-items: center;
+            gap: clamp(18px, 5vw, 48px);
+            padding: clamp(10px, 2vw, 20px) 0;
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hero-copy h1 {
+            font-size: clamp(28px, 3.4vw, 48px);
+            line-height: 1.08;
+            margin: 0 0 12px;
+        }
+
+        .hero-copy h1 .accent {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-copy p {
+            color: var(--text-soft);
+            font-size: clamp(15px, 1.6vw, 18px);
+            margin: 0 0 18px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            appearance: none;
+            border: 0;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+        }
+
+        .btn.primary {
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            box-shadow: 0 10px 24px rgba(249, 119, 7, .35);
+        }
+
+        .btn.primary:hover {
+            transform: translateY(-1px)
+        }
+
+        .btn.ghost {
+            background: rgba(0, 0, 0, .06);
+            color: var(--text)
+        }
+
+        .btn.ghost:hover {
+            opacity: .9
+        }
+
+        /* =========================
+       BOT HERO PANEL
+    ========================== */
+        .hero-bot-wrap {
+            position: relative;
+            width: min(620px, 92%);
+            aspect-ratio: 1 / 1;
+            /* preserves a square like your original circle */
+            margin-inline: auto;
+        }
+
+        /* Orange circular glow – preserves your brand vibe */
+        .hero-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(60% 60% at 50% 50%,
+                    rgba(249, 119, 7, 0.95) 0%,
+                    rgba(244, 108, 9, 0.85) 35%,
+                    rgba(249, 119, 7, 0.40) 60%,
+                    rgba(249, 119, 7, 0.10) 85%,
+                    rgba(249, 119, 7, 0.00) 100%);
+            filter: blur(6px);
+            box-shadow:
+                0 24px 64px rgba(249, 119, 7, .35),
+                0 6px 18px rgba(244, 108, 9, .28) inset;
+        }
+
+        /* Glass chat card on top of glow */
+        .bot-card {
+            position: absolute;
+            inset: 8%;
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.10));
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            backdrop-filter: blur(10px) saturate(120%);
+            -webkit-backdrop-filter: blur(10px) saturate(120%);
+            box-shadow:
+                0 12px 32px rgba(0, 0, 0, .20),
+                0 0 0 1px rgba(255, 255, 255, .06) inset,
+                0 0 30px rgba(249, 119, 7, .30);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 18px;
+            animation: rise .6s ease-out;
+        }
+
+        @keyframes rise {
+            from {
+                transform: translateY(8px);
+                opacity: 0
+            }
+
+            to {
+                transform: none;
+                opacity: 1
+            }
+        }
+
+        /* Backdrop-filter fallback for older browsers */
+        @supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+            .bot-card {
+                background: rgba(255, 255, 255, 0.85);
+            }
+
+            .bot-msg.ai {
+                background: rgba(255, 255, 255, 0.85);
+            }
+        }
+
+        .bot-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .bot-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, rgba(244, 108, 9, .18), rgba(249, 119, 7, .10));
+            border: 1px solid rgba(255, 255, 255, .35);
+            box-shadow: 0 6px 16px rgba(249, 119, 7, .25);
+            overflow: hidden;
+        }
+
+        .bot-avatar svg {
+            width: 30px;
+            height: 30px
+        }
+
+        .bot-status {
+            font-size: 14px;
+            color: rgba(0, 0, 0, .75);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bot-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%, #41ff9f 0%, #06cc79 70%, #009b59 100%);
+            box-shadow: 0 0 8px rgba(65, 255, 159, .8);
+        }
+
+        .bot-scroll {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow: auto;
+            padding-right: 2px;
+            scroll-behavior: smooth;
+        }
+
+        .bot-scroll::-webkit-scrollbar {
+            height: 8px;
+            width: 8px
+        }
+
+        .bot-scroll::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, .18);
+            border-radius: 10px;
+        }
+
+        .bot-msg {
+            max-width: 86%;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: 15px;
+            line-height: 1.4;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, .10);
+        }
+
+        .bot-msg.user {
+            align-self: flex-end;
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+        }
+
+        .bot-msg.ai {
+            align-self: flex-start;
+            color: rgba(0, 0, 0, .85);
+            background: rgba(255, 255, 255, .55);
+            border: 1px solid rgba(255, 255, 255, .45);
+            backdrop-filter: blur(6px);
+        }
+
+        /* Typing Animation */
+        .typing {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .typing span {
+            width: 6px;
+            height: 6px;
+            background: var(--text-soft);
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.4s infinite ease-in-out both;
+            opacity: 0.6;
+        }
+
+        .typing span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1.0);
+            }
+        }
+
+        .bot-input {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+            background: rgba(255, 255, 255, .45);
+            border: 1px solid rgba(255, 255, 255, .5);
+            border-radius: 12px;
+            padding: 8px;
+            backdrop-filter: blur(8px);
+        }
+
+        .bot-input input {
+            border: none;
+            outline: none;
+            background: transparent;
+            flex: 1;
+            color: #2b2b2b;
+            font-size: 14px;
+        }
+
+        .bot-input input::placeholder {
+            color: rgba(0, 0, 0, .45)
+        }
+
+        .bot-input .send {
+            all: unset;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 10px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            box-shadow: 0 6px 16px rgba(249, 119, 7, .35);
+            transition: transform .12s ease, box-shadow .12s ease;
+        }
+
+        .bot-input .send:hover {
+            transform: translateY(-1px)
+        }
+
+        /* Reduced-motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .bot-card {
+                animation: none
+            }
+
+            .btn,
+            .bot-input .send {
+                transition: none
+            }
+
+            .hero-glow {
+                filter: none
+            }
+        }
+
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px dashed rgba(0, 0, 0, 0.1);
+            color: var(--muted);
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <!-- SIMPLE HEADER (optional) -->
+        <header>
+            <div class="brand">
+                <!-- User: Please save the provided logo image as 'logo.png' in this folder -->
+                <img src="WhatsApp Image 2026-02-10 at 11.53.39 AM.jpeg" alt="Aura Companion"
+                    style="height: 100px; width: auto; border-radius: 16px; box-shadow: 0 4px 12px rgba(249,119,7,0.3);">
+                <span style="font-weight: 500; letter-spacing: -0.5px; font-size: 32px;">
+                    <span
+                        style="font-weight: 900; background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">A</span>ura
+                    <span
+                        style="font-weight: 900; background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">C</span>ompanion
+                </span>
+            </div>
+            <nav aria-label="main">
+                <button class="btn ghost">Log in</button>
+            </nav>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero">
+            <!-- LEFT SIDE COPY -->
+            <div class="hero-copy">
+                <h1>A gentle space to share, reflect, and feel understood.</h1>
+                <p>No one should ever feel alone — even in a digital world. Through compassionate AI, we create spaces
+                    where technology listens, understands, and stands beside every human journey.</p>
+                <div class="hero-actions">
+                    <button class="btn primary">Get Started</button>
+                    <button class="btn ghost">See How It Works</button>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE: ORANGE GLOW + GLASS CHAT -->
+            <div class="hero-bot-wrap">
+                <div class="hero-glow" aria-hidden="true"></div>
+
+                <div class="bot-card" role="region" aria-label="AI assistant chat preview">
+                    <div class="bot-card-header">
+                        <div class="bot-avatar" aria-hidden="true">
+                            <!-- Simple BOT SVG with your gradient -->
+                            <svg viewBox="0 0 48 48">
+                                <defs>
+                                    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#F46C09" />
+                                        <stop offset="100%" stop-color="#F97707" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="24" cy="24" r="22" fill="url(#g)" />
+                                <rect x="14" y="18" width="20" height="14" rx="7" fill="#fff" opacity=".92" />
+                                <circle cx="20" cy="25" r="2.2" fill="#3A393C" />
+                                <circle cx="28" cy="25" r="2.2" fill="#3A393C" />
+                                <rect x="22.6" y="10.5" width="2.8" height="7.2" rx="1.2" fill="#fff" opacity=".98" />
+                            </svg>
+                        </div>
+                        <div class="bot-status"><span class="dot"></span> AI Assistant Active</div>
+                    </div>
+
+                    <!-- Scroll area to hold messages -->
+                    <div id="botScroll" class="bot-scroll" aria-live="polite" aria-atomic="false">
+                        <!-- Messages injected by JS on load -->
+                    </div>
+
+                    <!-- Input (non-functional in preview or can be made functional below) -->
+                    <form id="botForm" class="bot-input" autocomplete="off">
+                        <input id="botInput" type="text" placeholder="Share what’s on your mind…"
+                            aria-label="Message the assistant">
+                        <button class="send" aria-label="Send" type="submit">➤</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p><strong>Disclaimer:</strong> This is for support, not for medical use.</p>
+        </footer>
+    </div>
+
+    <script>
+        // =========================
+        // SIMPLE CHAT PREVIEW LOGIC
+        // =========================
+        const scrollEl = document.getElementById('botScroll');
+        const form = document.getElementById('botForm');
+        const input = document.getElementById('botInput');
+
+        // Helper to create message bubble
+        function addMsg(type, text) {
+            const div = document.createElement('div');
+            div.className = `bot-msg ${type}`;
+            div.innerText = text;
+            scrollEl.appendChild(div);
+            scrollEl.scrollTop = scrollEl.scrollHeight;
+        }
+
+        // Helper to show typing animation
+        function showTyping() {
+            const div = document.createElement('div');
+            div.id = 'typingIndicator';
+            div.className = 'bot-msg ai typing';
+            div.innerHTML = '<span></span><span></span><span></span>';
+            scrollEl.appendChild(div);
+            scrollEl.scrollTop = scrollEl.scrollHeight;
+            return div;
+        }
+
+        // Seed the exact conversation you provided
+        const seedUser = "I don’t know where to share my feelings.";
+        const seedAI =
+            "I’m here for you.\n" +
+            "In a world that moves fast, everyone deserves a presence that listens.\n" +
+            "I’m built not just with code — but with compassion.";
+        addMsg('user', seedUser);
+        addMsg('ai', seedAI);
+
+        // Optional: lightweight send behavior for the preview
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = input.value.trim();
+            if (!text) return;
+            addMsg('user', text);
+            input.value = '';
+
+            // Show typing animation
+            const indicator = showTyping();
+
+            // Demo reply (empathetic placeholder) after delay
+            setTimeout(() => {
+                indicator.remove();
+                addMsg('ai', "Thank you for sharing. I’m here to listen. Would you like to talk about what you’re feeling right now?");
+            }, 1500);
+        });
+    </script>
+</body>
+
+</html>

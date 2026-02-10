@@ -1,0 +1,156 @@
+#!/usr/bin/env python
+"""
+TERMINAL ONLY - Start Emotion Detection in Terminal
+No web interface, just clean terminal display
+"""
+
+print("""
+╔═══════════════════════════════════════════════════════════════════════╗
+║                                                                       ║
+║        🎤 REAL-TIME EMOTION DETECTION - TERMINAL ONLY 🎤            ║
+║                                                                       ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+
+✨ SETUP IS SIMPLE:
+
+
+STEP 1: Open Terminal 1 - Start Backend API
+═══════════════════════════════════════════════════════════════════════
+
+  cd emotion-backend
+  uvicorn app.server:app --host 0.0.0.0 --port 8000
+
+  You should see:
+  ✅ INFO:     Uvicorn running on http://0.0.0.0:8000
+
+
+STEP 2: Open Terminal 2 - Start Terminal Emotion Display
+═══════════════════════════════════════════════════════════════════════
+
+  cd emotion-backend
+  python simple_terminal.py
+
+
+STEP 3: Speak into Your Microphone!
+═══════════════════════════════════════════════════════════════════════
+
+  • Emotions will appear in Terminal 2 every 2 seconds
+  • Each emotion shows:
+    ✓ Big emoji 😊
+    ✓ Emotion name (HAPPY, SAD, ANGRY, etc.)
+    ✓ Confidence percentage with visual bar
+    ✓ AI response message
+    ✓ All emotion probabilities
+
+
+═══════════════════════════════════════════════════════════════════════
+
+
+📊 WHAT YOU'LL SEE:
+
+
+======================================================================
+😊  HAPPY  😊
+======================================================================
+Confidence: 87% ██████████████████░░░
+Response: You sound upbeat! Great to hear.
+======================================================================
+
+Probabilities:
+  HAPPY   [██████████████████░░░] 87%
+  NEUTRAL [██░░░░░░░░░░░░░░░░░░] 10%
+  SAD     [░░░░░░░░░░░░░░░░░░░░] 2%
+  ANGRY   [░░░░░░░░░░░░░░░░░░░░] 1%
+
+
+═══════════════════════════════════════════════════════════════════════
+
+
+🎯 SUPPORTED EMOTIONS:
+
+  😠 ANGRY     - Detected when you sound frustrated
+  😊 HAPPY     - Detected when you sound upbeat
+  😢 SAD       - Detected when you sound down
+  😐 NEUTRAL   - Detected normal/calm speech
+  😨 FEAR      - Detected when you sound scared
+  🤢 DISGUST   - Detected disgust or discomfort
+  😲 SURPRISE  - Detected when you sound surprised
+
+
+═══════════════════════════════════════════════════════════════════════
+
+
+🚀 QUICK START (Copy & Paste):
+
+
+Terminal 1:
+──────────
+cd emotion-backend
+uvicorn app.server:app --host 0.0.0.0 --port 8000
+
+
+Terminal 2:
+──────────
+cd emotion-backend
+python simple_terminal.py
+
+
+═══════════════════════════════════════════════════════════════════════
+
+
+⚡ TROUBLESHOOTING:
+
+❌ "Backend not running"
+   → Make sure Terminal 1 has the uvicorn command running
+   → Check port 8000 is not in use
+
+❌ No emotions appearing
+   → Speak louder into your microphone
+   → Check microphone is enabled in Windows settings
+   → Try different microphone if you have multiple
+
+❌ "Connection refused"
+   → Backend API is not running
+   → Start it first in Terminal 1
+
+❌ "Microphone error"
+   → Check microphone permissions
+   → Try another microphone device
+
+
+═══════════════════════════════════════════════════════════════════════
+
+
+💡 TIPS:
+
+• Speak in full sentences for better detection
+• Different emotions work better with different tones
+• The system needs 2 seconds to process audio
+• Try different microphones if quality is poor
+• Stop with Ctrl+C in the terminal
+
+
+═══════════════════════════════════════════════════════════════════════
+
+
+📁 FILES YOU NEED:
+
+  simple_terminal.py      ← Main emotion display file
+  dashboard.py            ← (Optional) Web version - NOT USED
+  realtime_emotion_sd.py  ← (Optional) Alternative version - NOT USED
+
+Use only: simple_terminal.py
+
+
+═══════════════════════════════════════════════════════════════════════
+
+
+🎉 THAT'S IT!
+
+Just run the 2 commands and speak into your mic.
+Emotions will appear in your terminal! 
+
+
+═══════════════════════════════════════════════════════════════════════
+""")
